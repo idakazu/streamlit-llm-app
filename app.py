@@ -2,10 +2,33 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import streamlit as st
+import os
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
-llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0)
+# APIキーの取得（ローカル環境とStreamlit Cloud両方に対応）
+try:
+    api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
+except:
+    api_key = os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    st.error("🔑 OPENAI_API_KEYが設定されていません。")
+    st.info("**Streamlit Cloud:** SecretsでOPENAI_API_KEYを設定してください")
+    st.info("**ローカル環境:** .envファイルにOPENAI_API_KEYを設定してください")
+    st.stop()
+
+# OpenAI APIの初期化
+try:
+    llm = ChatOpenAI(
+        model_name="gpt-4o-mini", 
+        temperature=0,
+        openai_api_key=api_key
+    )
+except Exception as e:
+    st.error(f"❌ OpenAI APIの初期化に失敗しました: {str(e)}")
+    st.info("APIキーが正しく設定されているか確認してください")
+    st.stop()
 
 st.title("Lesson21: Streamlitを活用したWebアプリ開発")
 
