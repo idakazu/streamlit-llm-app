@@ -21,9 +21,9 @@ if not api_key:
 # OpenAI APIの初期化
 try:
     llm = ChatOpenAI(
-        model_name="gpt-4o-mini", 
+        model="gpt-4o-mini", 
         temperature=0,
-        openai_api_key=api_key
+        api_key=api_key
     )
 except Exception as e:
     st.error(f"❌ OpenAI APIの初期化に失敗しました: {str(e)}")
